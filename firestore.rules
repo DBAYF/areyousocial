@@ -1,0 +1,266 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function isAdmin() {
+      return isAuthenticated() &&
+             exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+             get(/databases/$(database)/documents/users/$(request.auth.uid)).data.roles.admin == true;
+    }
+
+    function isModerator() {
+      return isAuthenticated() &&
+             exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+             (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.roles.admin == true ||
+              get(/databases/$(database)/documents/users/$(request.auth.uid)).data.roles.moderator == true);
+    }
+
+    function canReadUserData(userId) {
+      return isOwner(userId) || isAdmin() ||
+             (isAuthenticated() &&
+              exists(/databases/$(database)/documents/connections/$(request.auth.uid + '_' + userId)) &&
+              get(/databases/$(database)/documents/connections/$(request.auth.uid + '_' + userId)).data.status == 'connected');
+    }
+
+    function canReadPost(postId) {
+      return exists(/databases/$(database)/documents/posts/$(postId)) &&
+             (get(/databases/$(database)/documents/posts/$(postId)).data.visibility == 'public' ||
+              isOwner(get(/databases/$(database)/documents/posts/$(postId)).data.author_id) ||
+              isAdmin() ||
+              (isAuthenticated() && get(/databases/$(database)/documents/posts/$(postId)).data.visibility == 'connections' &&
+               exists(/databases/$(database)/documents/connections/$(request.auth.uid + '_' + get(/databases/$(database)/documents/posts/$(postId)).data.author_id)) &&
+               get(/databases/$(database)/documents/connections/$(request.auth.uid + '_' + get(/databases/$(database)/documents/posts/$(postId)).data.author_id)).data.status == 'connected'));
+    }
+
+    // Users collection
+    match /users/{userId} {
+      allow create: if isAuthenticated() && request.auth.uid == userId;
+      allow read: if canReadUserData(userId);
+      allow update: if isOwner(userId) || isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // Profiles collection
+    match /profiles/{userId} {
+      allow create: if isAuthenticated() && request.auth.uid == userId;
+      allow read: if canReadUserData(userId);
+      allow update: if isOwner(userId) || isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // Posts collection
+    match /posts/{postId} {
+      allow create: if isAuthenticated() && request.auth.uid == resource.data.author_id;
+      allow read: if canReadPost(postId);
+      allow update: if isAuthenticated() &&
+                      (isOwner(resource.data.author_id) || isModerator()) &&
+                      // Only allow updates to specific fields
+                      request.resource.data.diff(resource.data).affectedKeys()
+                        .hasOnly(['title', 'content', 'images', 'tags', 'metadata', 'visibility', 'updated_at']);
+      allow delete: if isAuthenticated() &&
+                     (isOwner(resource.data.author_id) || isModerator());
+    }
+
+    // Comments collection
+    match /comments/{commentId} {
+      allow create: if isAuthenticated() &&
+                     request.auth.uid == resource.data.author_id &&
+                     canReadPost(resource.data.post_id);
+      allow read: if canReadPost(resource.data.post_id);
+      allow update: if isAuthenticated() &&
+                     isOwner(resource.data.author_id) &&
+                     request.resource.data.diff(resource.data).affectedKeys()
+                       .hasOnly(['content', 'updated_at']);
+      allow delete: if isAuthenticated() &&
+                     (isOwner(resource.data.author_id) || isModerator());
+    }
+
+    // Likes collection
+    match /likes/{likeId} {
+      allow create: if isAuthenticated() &&
+                     request.auth.uid == resource.data.user_id &&
+                     canReadPost(resource.data.post_id);
+      allow read: if canReadPost(resource.data.post_id);
+      allow delete: if isAuthenticated() && isOwner(resource.data.user_id);
+    }
+
+    // Threads collection
+    match /threads/{threadId} {
+      allow create: if isAuthenticated() &&
+                     request.auth.uid in resource.data.participants;
+      allow read: if isAuthenticated() &&
+                   request.auth.uid in resource.data.participants;
+      allow update: if isAuthenticated() &&
+                     request.auth.uid in resource.data.participants &&
+                     request.resource.data.diff(resource.data).affectedKeys()
+                       .hasOnly(['last_message', 'last_activity', 'unread_count', 'updated_at']);
+      allow delete: if isAuthenticated() &&
+                     request.auth.uid in resource.data.participants;
+    }
+
+    // Messages collection
+    match /messages/{messageId} {
+      allow create: if isAuthenticated() &&
+                     exists(/databases/$(database)/documents/threads/$(resource.data.thread_id)) &&
+                     request.auth.uid in get(/databases/$(database)/documents/threads/$(resource.data.thread_id)).data.participants &&
+                     request.auth.uid == resource.data.sender_id;
+      allow read: if isAuthenticated() &&
+                   exists(/databases/$(database)/documents/threads/$(resource.data.thread_id)) &&
+                   request.auth.uid in get(/databases/$(database)/documents/threads/$(resource.data.thread_id)).data.participants;
+      allow update: if isAuthenticated() &&
+                     isOwner(resource.data.sender_id) &&
+                     request.resource.data.diff(resource.data).affectedKeys()
+                       .hasOnly(['read_by', 'updated_at']);
+      allow delete: if isAuthenticated() && isOwner(resource.data.sender_id);
+    }
+
+    // Connections collection
+    match /connections/{connectionId} {
+      allow create: if isAuthenticated() &&
+                     (request.auth.uid == resource.data.requester_id ||
+                      request.auth.uid == resource.data.addressee_id);
+      allow read: if isAuthenticated() &&
+                   (isOwner(resource.data.requester_id) ||
+                    isOwner(resource.data.addressee_id) ||
+                    isAdmin());
+      allow update: if isAuthenticated() &&
+                     (isOwner(resource.data.requester_id) ||
+                      isOwner(resource.data.addressee_id)) &&
+                     request.resource.data.diff(resource.data).affectedKeys()
+                       .hasOnly(['status', 'accepted_at', 'updated_at']);
+      allow delete: if isAuthenticated() &&
+                     (isOwner(resource.data.requester_id) ||
+                      isOwner(resource.data.addressee_id) ||
+                      isAdmin());
+    }
+
+    // Opportunities collection
+    match /opportunities/{opportunityId} {
+      allow create: if isAuthenticated() && request.auth.uid == resource.data.creator_id;
+      allow read: if resource.data.visibility == 'public' ||
+                   isOwner(resource.data.creator_id) ||
+                   isAdmin() ||
+                   (resource.data.visibility == 'connections' && isAuthenticated() &&
+                    exists(/databases/$(database)/documents/connections/$(request.auth.uid + '_' + resource.data.creator_id)) &&
+                    get(/databases/$(database)/documents/connections/$(request.auth.uid + '_' + resource.data.creator_id)).data.status == 'connected');
+      allow update: if isAuthenticated() &&
+                     (isOwner(resource.data.creator_id) || isAdmin()) &&
+                     request.resource.data.diff(resource.data).affectedKeys()
+                       .hasOnly(['title', 'description', 'category', 'tags', 'location',
+                                'remote_possible', 'compensation_type', 'salary_range',
+                                'benefits', 'required_skills', 'preferred_skills',
+                                'experience_level', 'application_deadline', 'application_process',
+                                'visibility', 'featured', 'updated_at', 'expires_at']);
+      allow delete: if isAuthenticated() &&
+                     (isOwner(resource.data.creator_id) || isAdmin());
+    }
+
+    // Applications collection
+    match /applications/{applicationId} {
+      allow create: if isAuthenticated() &&
+                     request.auth.uid == resource.data.applicant_id &&
+                     exists(/databases/$(database)/documents/opportunities/$(resource.data.opportunity_id)) &&
+                     get(/databases/$(database)/documents/opportunities/$(resource.data.opportunity_id)).data.status != 'expired';
+      allow read: if isAuthenticated() &&
+                   (isOwner(resource.data.applicant_id) ||
+                    isOwner(get(/databases/$(database)/documents/opportunities/$(resource.data.opportunity_id)).data.creator_id) ||
+                    isAdmin());
+      allow update: if isAuthenticated() &&
+                     (isOwner(get(/databases/$(database)/documents/opportunities/$(resource.data.opportunity_id)).data.creator_id) ||
+                      isAdmin()) &&
+                     request.resource.data.diff(resource.data).affectedKeys()
+                       .hasOnly(['status', 'reviewed_at', 'decision_at']);
+      allow delete: if isAuthenticated() && isOwner(resource.data.applicant_id);
+    }
+
+    // Saved opportunities collection
+    match /saved_opportunities/{savedId} {
+      allow create: if isAuthenticated() && request.auth.uid == resource.data.user_id;
+      allow read: if isAuthenticated() && isOwner(resource.data.user_id);
+      allow update: if isAuthenticated() &&
+                     isOwner(resource.data.user_id) &&
+                     request.resource.data.diff(resource.data).affectedKeys()
+                       .hasOnly(['notes']);
+      allow delete: if isAuthenticated() && isOwner(resource.data.user_id);
+    }
+
+    // Recommendations collection
+    match /recommendations/{recommendationId} {
+      allow create: if isAdmin(); // Only admin can create recommendations
+      allow read: if isAuthenticated() && isOwner(resource.data.user_id);
+      allow update: if isAuthenticated() &&
+                     (isOwner(resource.data.user_id) || isAdmin()) &&
+                     request.resource.data.diff(resource.data).affectedKeys()
+                       .hasOnly(['dismissed', 'completed']);
+      allow delete: if isAdmin();
+    }
+
+    // Next moves collection
+    match /next_moves/{moveId} {
+      allow create: if isAdmin(); // Only admin can create next moves
+      allow read: if isAuthenticated() && isOwner(resource.data.user_id);
+      allow update: if isAuthenticated() &&
+                     isOwner(resource.data.user_id) &&
+                     request.resource.data.diff(resource.data).affectedKeys()
+                       .hasOnly(['completed', 'completed_at']);
+      allow delete: if isAdmin();
+    }
+
+    // Quick actions collection
+    match /quick_actions/{actionId} {
+      allow create: if isAdmin(); // Only admin can create quick actions
+      allow read: if isAuthenticated() && isOwner(resource.data.user_id);
+      allow update: if isAuthenticated() &&
+                     isOwner(resource.data.user_id) &&
+                     request.resource.data.diff(resource.data).affectedKeys()
+                       .hasOnly(['completed']);
+      allow delete: if isAdmin();
+    }
+
+    // Notifications collection
+    match /notifications/{notificationId} {
+      allow create: if isAdmin(); // Only admin can create notifications
+      allow read: if isAuthenticated() && isOwner(resource.data.user_id);
+      allow update: if isAuthenticated() &&
+                     isOwner(resource.data.user_id) &&
+                     request.resource.data.diff(resource.data).affectedKeys()
+                       .hasOnly(['read']);
+      allow delete: if isAuthenticated() && isOwner(resource.data.user_id);
+    }
+
+    // Reports collection
+    match /reports/{reportId} {
+      allow create: if isAuthenticated() && request.auth.uid == resource.data.reporter_id;
+      allow read: if isModerator();
+      allow update: if isModerator() &&
+                     request.resource.data.diff(resource.data).affectedKeys()
+                       .hasOnly(['status', 'reviewed_by', 'reviewed_at', 'resolution']);
+      allow delete: if isAdmin();
+    }
+
+    // Audit logs collection
+    match /audit_logs/{logId} {
+      allow create: if isAdmin();
+      allow read: if isAdmin();
+      allow update: if false; // Audit logs are immutable
+      allow delete: if false; // Audit logs cannot be deleted
+    }
+
+    // User analysis collection
+    match /user_analysis/{analysisId} {
+      allow create: if isAdmin();
+      allow read: if isAuthenticated() && isOwner(resource.data.user_id);
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
+    }
+  }
+}

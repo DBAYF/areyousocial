@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ReMake - Entrepreneur Community</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="icon" type="image/jpeg" href="logo.jpeg">
+    <link rel="apple-touch-icon" href="logo.jpeg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <style>
+        body { font-family: 'Inter', system-ui, sans-serif; }
+        .gradient-bg { background: linear-gradient(135deg, #961919 0%, #C42424 100%); }
+        .warm-bg { background-color: #F9F7F4; }
+        .card-hover {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            border-radius: 0.75rem;
+        }
+        .card-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(150, 25, 25, 0.1);
+        }
+        .glass { backdrop-filter: blur(20px); background: rgba(255, 255, 255, 0.7); }
+        .primary-text { color: #961919; }
+        .secondary-bg { background-color: #E8DFD0; }
+        .muted-bg { background-color: #EDE9E3; }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans">
+    <!-- Header -->
+    <header class="bg-white shadow-sm border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center space-x-4">
+                    <img src="logo.jpeg" alt="ReMake Logo" class="w-8 h-8 rounded-lg shadow-sm object-contain bg-white">
+                    <span class="text-xl font-semibold text-gray-900">ReMake</span>
+                    <span class="text-xs text-gray-600 bg-[#E8DFD0] px-2 py-1 rounded-full">DEMO</span>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button class="bg-[#961919] text-white px-4 py-2 rounded-lg hover:bg-[#C42424] transition-all duration-200 font-medium">
+                        Join Community
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="gradient-bg text-white py-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h1 class="text-4xl md:text-6xl font-semibold mb-6 leading-tight">
+                Connect. <span class="text-[#E8DFD0]">Collaborate.</span> Build.
+            </h1>
+            <p class="text-xl md:text-2xl mb-8 opacity-90 max-w-3xl mx-auto leading-relaxed">
+                The professional community for entrepreneurs, founders, and innovators rebuilding careers and launching ventures.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <button class="bg-white text-[#961919] px-8 py-3 rounded-lg font-semibold hover:bg-[#EDE9E3] transition-all duration-200 shadow-lg">
+                    Start Your Journey
+                </button>
+                <button class="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-[#961919] transition-all duration-200">
+                    Learn More
+                </button>
+            </div>
+            <div class="mt-8 text-sm opacity-75 flex items-center gap-2">
+                <img src="logo.jpeg" alt="ReMake" class="w-4 h-4 rounded object-contain bg-white">
+                <span>Professional • Supportive • Free Forever</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features -->
+    <section class="py-20 warm-bg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-semibold text-gray-900 mb-4">Everything You Need to Rebuild</h2>
+                <p class="text-xl text-gray-700 max-w-2xl mx-auto">Professional networking, mentorship, and opportunities designed for career transitions and entrepreneurial journeys.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Feature 1 -->
+                <div class="card-hover bg-white p-8 shadow-sm border border-gray-200">
+                    <div class="w-12 h-12 bg-[#E8DFD0] rounded-lg flex items-center justify-center mb-4">
+                        <i data-lucide="message-circle" class="w-6 h-6 text-[#961919]"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3 text-gray-900">Smart Messaging</h3>
+                    <p class="text-gray-600 leading-relaxed">Connect with confidence through our AI-enhanced messaging platform. Get help crafting professional communications and build meaningful relationships.</p>
+                </div>
+
+                <!-- Feature 2 -->
+                <div class="card-hover bg-white p-8 shadow-sm border border-gray-200">
+                    <div class="w-12 h-12 bg-[#E8DFD0] rounded-lg flex items-center justify-center mb-4">
+                        <i data-lucide="briefcase" class="w-6 h-6 text-[#961919]"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3 text-gray-900">Opportunity Hub</h3>
+                    <p class="text-gray-600 leading-relaxed">Discover career opportunities, post openings, and connect with co-founders. Our marketplace supports career transitions and entrepreneurial ventures.</p>
+                </div>
+
+                <!-- Feature 3 -->
+                <div class="card-hover bg-white p-8 shadow-sm border border-gray-200">
+                    <div class="w-12 h-12 bg-[#E8DFD0] rounded-lg flex items-center justify-center mb-4">
+                        <i data-lucide="users" class="w-6 h-6 text-[#961919]"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3 text-gray-900">Mentorship Circle</h3>
+                    <p class="text-gray-600 leading-relaxed">Access experienced mentors and give back by guiding others. Our structured mentorship program supports career development and entrepreneurial growth.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Community Feed Demo -->
+    <section class="py-20 bg-white">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-semibold text-gray-900 mb-4">Join the Community</h2>
+                <p class="text-xl text-gray-700">Connect with entrepreneurs rebuilding careers and launching ventures</p>
+            </div>
+
+            <div class="space-y-6">
+                <!-- Post 1 -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                    <div class="flex items-start space-x-4">
+                        <div class="w-12 h-12 bg-[#961919] rounded-lg flex items-center justify-center">
+                            <span class="text-white font-semibold">SC</span>
+                        </div>
+                        <div class="flex-1">
+                            <div class="flex items-center space-x-2 mb-3">
+                                <span class="font-semibold text-gray-900">Sarah Chen</span>
+                                <span class="text-gray-500">•</span>
+                                <span class="text-gray-500 text-sm">2h ago</span>
+                                <span class="bg-[#E8DFD0] text-[#961919] px-2 py-1 rounded-full text-xs font-medium">Career Transition</span>
+                            </div>
+                            <h3 class="font-semibold mb-3 text-gray-900">Successfully pivoted to product management</h3>
+                            <p class="text-gray-700 mb-4 leading-relaxed">After 8 years in marketing, I made the leap to product management. The ReMake community provided invaluable guidance during this transition. Grateful for the mentorship and support network.</p>
+                            <div class="flex items-center space-x-6 text-gray-500">
+                                <div class="flex items-center space-x-1 hover:text-[#961919] cursor-pointer">
+                                    <i data-lucide="heart" class="w-5 h-5"></i>
+                                    <span>24</span>
+                                </div>
+                                <div class="flex items-center space-x-1 hover:text-[#961919] cursor-pointer">
+                                    <i data-lucide="message-circle" class="w-5 h-5"></i>
+                                    <span>8</span>
+                                </div>
+                                <div class="flex items-center space-x-1 hover:text-[#961919] cursor-pointer">
+                                    <i data-lucide="share" class="w-5 h-5"></i>
+                                    <span>3</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Post 2 -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                    <div class="flex items-start space-x-4">
+                        <div class="w-12 h-12 bg-[#961919] rounded-lg flex items-center justify-center">
+                            <span class="text-white font-semibold">MJ</span>
+                        </div>
+                        <div class="flex-1">
+                            <div class="flex items-center space-x-2 mb-3">
+                                <span class="font-semibold text-gray-900">Marcus Johnson</span>
+                                <span class="text-gray-500">•</span>
+                                <span class="text-gray-500 text-sm">4h ago</span>
+                                <span class="bg-[#E8DFD0] text-[#961919] px-2 py-1 rounded-full text-xs font-medium">Opportunity</span>
+                            </div>
+                            <h3 class="font-semibold mb-3 text-gray-900">Seeking Co-founder for Healthcare AI Startup</h3>
+                            <p class="text-gray-700 mb-4 leading-relaxed">Former healthcare executive with 12+ years experience looking for a technical co-founder. We have domain expertise, clinical partnerships, and early validation. You bring the engineering talent. Let's build something meaningful together.</p>
+                            <div class="flex items-center space-x-6 text-gray-500">
+                                <div class="flex items-center space-x-1 hover:text-[#961919] cursor-pointer">
+                                    <i data-lucide="heart" class="w-5 h-5"></i>
+                                    <span>12</span>
+                                </div>
+                                <div class="flex items-center space-x-1 hover:text-[#961919] cursor-pointer">
+                                    <i data-lucide="message-circle" class="w-5 h-5"></i>
+                                    <span>15</span>
+                                </div>
+                                <div class="flex items-center space-x-1 hover:text-[#961919] cursor-pointer">
+                                    <i data-lucide="share" class="w-5 h-5"></i>
+                                    <span>7</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Post 3 -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                    <div class="flex items-start space-x-4">
+                        <div class="w-12 h-12 bg-[#961919] rounded-lg flex items-center justify-center">
+                            <span class="text-white font-semibold">DR</span>
+                        </div>
+                        <div class="flex-1">
+                            <div class="flex items-center space-x-2 mb-3">
+                                <span class="font-semibold text-gray-900">Dr. Emily Rodriguez</span>
+                                <span class="text-gray-500">•</span>
+                                <span class="text-gray-500 text-sm">6h ago</span>
+                                <span class="bg-[#E8DFD0] text-[#961919] px-2 py-1 rounded-full text-xs font-medium">Mentorship Available</span>
+                            </div>
+                            <h3 class="font-semibold mb-3 text-gray-900">Offering Mentorship: From Lab to Launch</h3>
+                            <p class="text-gray-700 mb-4 leading-relaxed">PhD in Biotechnology with 20+ years experience. I've successfully spun out 3 companies from academic research. Happy to mentor scientists and researchers interested in commercialization and entrepreneurship.</p>
+                            <div class="flex items-center space-x-6 text-gray-500">
+                                <div class="flex items-center space-x-1 hover:text-[#961919] cursor-pointer">
+                                    <i data-lucide="heart" class="w-5 h-5"></i>
+                                    <span>31</span>
+                                </div>
+                                <div class="flex items-center space-x-1 hover:text-[#961919] cursor-pointer">
+                                    <i data-lucide="message-circle" class="w-5 h-5"></i>
+                                    <span>22</span>
+                                </div>
+                                <div class="flex items-center space-x-1 hover:text-[#961919] cursor-pointer">
+                                    <i data-lucide="share" class="w-5 h-5"></i>
+                                    <span>9</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Impact Stats -->
+    <section class="py-20 muted-bg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-semibold text-gray-900 mb-4">Real Impact, Real Community</h2>
+                <p class="text-lg text-gray-700">Supporting career transitions and entrepreneurial journeys worldwide</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 text-center">
+                <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+                    <div class="text-4xl font-semibold text-[#961919] mb-2">2,847</div>
+                    <div class="text-gray-600 font-medium">Active Members</div>
+                    <div class="text-sm text-gray-500 mt-1">Growing community</div>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+                    <div class="text-4xl font-semibold text-[#961919] mb-2">342</div>
+                    <div class="text-gray-600 font-medium">Career Transitions</div>
+                    <div class="text-sm text-gray-500 mt-1">Successful pivots</div>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+                    <div class="text-4xl font-semibold text-[#961919] mb-2">156</div>
+                    <div class="text-gray-600 font-medium">Active Mentorships</div>
+                    <div class="text-sm text-gray-500 mt-1">Ongoing guidance</div>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+                    <div class="text-4xl font-semibold text-[#961919] mb-2">28</div>
+                    <div class="text-gray-600 font-medium">Countries</div>
+                    <div class="text-sm text-gray-500 mt-1">Global reach</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="gradient-bg text-white py-20">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 class="text-3xl font-semibold mb-4">Ready to Rebuild Your Future?</h2>
+            <p class="text-xl mb-8 opacity-90 max-w-2xl mx-auto leading-relaxed">
+                Join our supportive community of entrepreneurs, career changers, and innovators. Get the guidance, connections, and opportunities you need to succeed.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <button class="bg-white text-[#961919] px-8 py-3 rounded-lg font-semibold hover:bg-[#EDE9E3] transition-all duration-200 shadow-lg">
+                    Start Your Journey
+                </button>
+                <button class="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-[#961919] transition-all duration-200">
+                    Explore Community
+                </button>
+            </div>
+            <div class="mt-6 flex items-center justify-center gap-6 text-sm opacity-75">
+                <div class="flex items-center gap-2">
+                    <i data-lucide="shield" class="w-4 h-4"></i>
+                    <span>Professional & Supportive</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <i data-lucide="users" class="w-4 h-4"></i>
+                    <span>100% Free Forever</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <i data-lucide="heart" class="w-4 h-4"></i>
+                    <span>No Credit Card Required</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <div class="flex items-center space-x-3 mb-4">
+                        <img src="logo.jpeg" alt="ReMake Logo" class="w-8 h-8 rounded-lg shadow-sm object-contain bg-white">
+                        <span class="text-xl font-semibold">ReMake</span>
+                    </div>
+                    <p class="text-gray-400 leading-relaxed">
+                        Supporting career transitions and entrepreneurial journeys with professional networking, mentorship, and opportunity matching.
+                    </p>
+                    <div class="flex space-x-4 mt-4">
+                        <div class="w-8 h-8 bg-[#E8DFD0] rounded-lg flex items-center justify-center">
+                            <i data-lucide="linkedin" class="w-4 h-4 text-[#961919]"></i>
+                        </div>
+                        <div class="w-8 h-8 bg-[#E8DFD0] rounded-lg flex items-center justify-center">
+                            <i data-lucide="twitter" class="w-4 h-4 text-[#961919]"></i>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="font-semibold mb-4 text-white">Platform</h3>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#" class="hover:text-[#E8DFD0] transition-colors">Smart Messaging</a></li>
+                        <li><a href="#" class="hover:text-[#E8DFD0] transition-colors">Job Marketplace</a></li>
+                        <li><a href="#" class="hover:text-[#E8DFD0] transition-colors">Mentorship Network</a></li>
+                        <li><a href="#" class="hover:text-[#E8DFD0] transition-colors">Career Resources</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="font-semibold mb-4 text-white">Community</h3>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#" class="hover:text-[#E8DFD0] transition-colors">Success Stories</a></li>
+                        <li><a href="#" class="hover:text-[#E8DFD0] transition-colors">Events & Webinars</a></li>
+                        <li><a href="#" class="hover:text-[#E8DFD0] transition-colors">Discussion Forums</a></li>
+                        <li><a href="#" class="hover:text-[#E8DFD0] transition-colors">Knowledge Base</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="font-semibold mb-4 text-white">Support</h3>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#" class="hover:text-[#E8DFD0] transition-colors">Help Center</a></li>
+                        <li><a href="#" class="hover:text-[#E8DFD0] transition-colors">Contact Support</a></li>
+                        <li><a href="#" class="hover:text-[#E8DFD0] transition-colors">Community Guidelines</a></li>
+                        <li><a href="#" class="hover:text-[#E8DFD0] transition-colors">Privacy Policy</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 mt-8 pt-8 text-center">
+                <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                    <p class="text-gray-400">&copy; 2024 ReMake. Supporting career transitions and entrepreneurship.</p>
+                    <div class="flex items-center gap-4 text-sm text-gray-500">
+                        <span>Built with ❤️ for the entrepreneurial community</span>
+                        <div class="flex items-center gap-2">
+                            <img src="logo.jpeg" alt="ReMake" class="w-4 h-4 rounded object-contain bg-white">
+                            <span>Professional • Supportive • Free</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Initialize Lucide icons
+        document.addEventListener('DOMContentLoaded', function() {
+            lucide.createIcons();
+
+            // Add interaction demo
+            const buttons = document.querySelectorAll('button');
+            buttons.forEach(button => {
+                if (!button.classList.contains('no-alert')) {
+                    button.addEventListener('click', function() {
+                        alert('🎯 This is a professional demo of ReMake!\n\nThe full platform includes:\n• Real-time messaging with AI assistance\n• Job marketplace & opportunity matching\n• Mentorship network & career guidance\n• Professional networking tools\n• Admin moderation & analytics\n\nAll running on FREE Firebase services!\n\n💡 Add your logo.jpeg file to see the branding! 🚀');
+                    });
+                }
+            });
+
+            // Add hover effects for interactive elements
+            const interactiveElements = document.querySelectorAll('[data-lucide]');
+            interactiveElements.forEach(el => {
+                el.style.transition = 'color 0.2s ease';
+            });
+        });
+    </script>
+</body>
+</html>

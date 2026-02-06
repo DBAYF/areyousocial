@@ -1,0 +1,97 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function isAdmin() {
+      return isAuthenticated() &&
+             firestore.exists(/databases/(default)/documents/users/$(request.auth.uid)) &&
+             firestore.get(/databases/(default)/documents/users/$(request.auth.uid)).data.roles.admin == true;
+    }
+
+    function isValidImage() {
+      return request.resource.contentType.matches('image/.*') &&
+             request.resource.size < 10 * 1024 * 1024; // 10MB max
+    }
+
+    function isValidFile() {
+      return request.resource.size < 50 * 1024 * 1024; // 50MB max
+    }
+
+    // Avatars bucket
+    match /avatars/{userId}/{allPaths=**} {
+      allow read: if true; // Public read for avatars
+      allow write: if isOwner(userId) &&
+                     isValidImage() &&
+                     request.resource.contentType.matches('image/(jpeg|png|webp)');
+      allow delete: if isOwner(userId) || isAdmin();
+    }
+
+    // Post images bucket
+    match /post-images/{postId}/{allPaths=**} {
+      allow read: if true; // Public read for post images
+      allow write: if isAuthenticated() &&
+                     firestore.exists(/databases/(default)/documents/posts/$(postId)) &&
+                     firestore.get(/databases/(default)/documents/posts/$(postId)).data.author_id == request.auth.uid &&
+                     isValidImage() &&
+                     request.resource.contentType.matches('image/(jpeg|png|webp|gif)');
+      allow delete: if isAuthenticated() &&
+                     (firestore.get(/databases/(default)/documents/posts/$(postId)).data.author_id == request.auth.uid ||
+                      isAdmin());
+    }
+
+    // Message attachments bucket
+    match /message-attachments/{threadId}/{messageId}/{allPaths=**} {
+      allow read: if isAuthenticated() &&
+                   firestore.exists(/databases/(default)/documents/threads/$(threadId)) &&
+                   request.auth.uid in firestore.get(/databases/(default)/documents/threads/$(threadId)).data.participants;
+      allow write: if isAuthenticated() &&
+                    firestore.exists(/databases/(default)/documents/threads/$(threadId)) &&
+                    request.auth.uid in firestore.get(/databases/(default)/documents/threads/$(threadId)).data.participants &&
+                    firestore.exists(/databases/(default)/documents/messages/$(messageId)) &&
+                    firestore.get(/databases/(default)/documents/messages/$(messageId)).data.sender_id == request.auth.uid &&
+                    isValidFile();
+      allow delete: if isAuthenticated() &&
+                     firestore.get(/databases/(default)/documents/messages/$(messageId)).data.sender_id == request.auth.uid;
+    }
+
+    // Opportunity attachments bucket
+    match /opportunity-attachments/{opportunityId}/{allPaths=**} {
+      allow read: if isAuthenticated() &&
+                   firestore.exists(/databases/(default)/documents/opportunities/$(opportunityId));
+      allow write: if isAuthenticated() &&
+                     firestore.exists(/databases/(default)/documents/opportunities/$(opportunityId)) &&
+                     firestore.get(/databases/(default)/documents/opportunities/$(opportunityId)).data.creator_id == request.auth.uid &&
+                     isValidFile();
+      allow delete: if isAuthenticated() &&
+                     firestore.get(/databases/(default)/documents/opportunities/$(opportunityId)).data.creator_id == request.auth.uid ||
+                     isAdmin();
+    }
+
+    // Temporary uploads (for processing)
+    match /temp/{userId}/{allPaths=**} {
+      allow read: if isOwner(userId);
+      allow write: if isOwner(userId) && isValidFile();
+      allow delete: if isOwner(userId);
+    }
+
+    // Admin uploads (system files, backups, etc.)
+    match /admin/{allPaths=**} {
+      allow read: if isAdmin();
+      allow write: if isAdmin() && isValidFile();
+      allow delete: if isAdmin();
+    }
+
+    // Block all other access
+    match /{allPaths=**} {
+      allow read, write, delete: if false;
+    }
+  }
+}

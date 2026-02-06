@@ -1,0 +1,16 @@
+{
+  "name": "ReMake - Entrepreneur Social Platform",
+  "description": "A complete social platform for entrepreneurs with AI-powered networking, mentorship, and job marketplace features",
+  "version": "1.0.0",
+  "framework": "nextjs",
+  "buildCommand": "npm run build",
+  "outputDirectory": ".next",
+  "installCommand": "npm install",
+  "devCommand": "npm run dev",
+  "environment": {
+    "NODE_ENV": "production"
+  },
+  "ports": {
+    "main": 3000
+  }
+}
