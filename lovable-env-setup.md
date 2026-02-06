@@ -18,7 +18,7 @@ FIRESTORE_PROJECT_ID=remakevle
 
 ### AI Services
 ```
-OPENAI_API_KEY=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
+OPENAI_API_KEY=your_openai_api_key_here
 ```
 
 ### Application Settings
